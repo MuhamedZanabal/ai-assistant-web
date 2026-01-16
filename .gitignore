@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+.next/
+out/
+build/
+dist/
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+*.pem
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Prisma
+prisma/migrations/
+
+# Docker
+.docker/
+
+# Misc
+*.tsbuildinfo
+.eslintcache
+.vercel
+*.tsbuildinfo
+
+# TypeScript
+*.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
