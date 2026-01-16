@@ -209,6 +209,51 @@ npm run db:seed
 
 ## Deployment
 
+### GitHub + Netlify (Recommended)
+
+1. **Push to GitHub**
+   ```bash
+   # Create repository at https://github.com/new
+   git remote add origin https://github.com/YOUR_USERNAME/ai-assistant-web.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+2. **Connect to Netlify**
+   - Go to [Netlify](https://app.netlify.com/start)
+   - Click "Add new site" > "Import an existing project"
+   - Select your GitHub repository
+   - Netlify will automatically detect Next.js and configure build settings
+
+3. **Configure Environment Variables**
+   In Netlify dashboard, go to Site Settings > Environment Variables and add:
+   - `OPENAI_API_KEY` - Your OpenAI API key
+   - `DATABASE_URL` - PostgreSQL connection string
+   - `JWT_SECRET` - Random string for JWT signing (32+ characters)
+
+4. **Deploy**
+   - Push to main branch triggers automatic deployment
+   - Visit your site URL shown in Netlify dashboard
+
+### GitHub + Vercel
+
+1. **Push to GitHub** (same as above)
+
+2. **Connect to Vercel**
+   - Go to [Vercel](https://vercel.com/new)
+   - Import your GitHub repository
+   - Vercel will automatically detect Next.js
+
+3. **Configure Environment Variables**
+   In Vercel dashboard, go to Settings > Environment Variables and add:
+   - `OPENAI_API_KEY`
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+
+4. **Deploy**
+   - Automatic deployment on git push
+   - Visit your deployment URL
+
 ### Docker
 
 ```bash
