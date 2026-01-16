@@ -12,6 +12,7 @@ const envSchema = z.object({
   APP_NAME: z.string().default('ai-assistant-web'),
   APP_PORT: z.coerce.number().default(3000),
   API_PREFIX: z.string().default('/api'),
+  NEXT_PUBLIC_APP_URL: z.string().default('http://localhost:3000'),
 
   // Database
   DATABASE_URL: z.string().url().min(1).optional(),
@@ -19,11 +20,10 @@ const envSchema = z.object({
   // Redis
   REDIS_URL: z.string().url().min(1).optional(),
 
-  // OpenAI
-  OPENAI_API_KEY: z.string().min(1).optional(),
-  OPENAI_ORG_ID: z.string().optional(),
-  OPENAI_PROJECT_ID: z.string().optional(),
-  OPENAI_MODEL: z.string().default('gpt-4-turbo-preview'),
+  // OpenRouter (AI Provider)
+  OPENROUTER_API_KEY: z.string().min(1).optional(),
+  OPENROUTER_BASE_URL: z.string().url().default('https://openrouter.ai/api/v1'),
+  OPENAI_MODEL: z.string().default('mistralai/devstral-2512:free'),
   OPENAI_MAX_TOKENS: z.coerce.number().default(4096),
   OPENAI_TEMPERATURE: z.coerce.number().min(0).max(2).default(0.7),
 
@@ -56,7 +56,9 @@ const defaultConfig = {
   APP_NAME: 'ai-assistant-web',
   APP_PORT: 3000,
   API_PREFIX: '/api',
-  OPENAI_MODEL: 'gpt-4-turbo-preview',
+  NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
+  OPENROUTER_BASE_URL: 'https://openrouter.ai/api/v1',
+  OPENAI_MODEL: 'mistralai/devstral-2512:free',
   OPENAI_MAX_TOKENS: 4096,
   OPENAI_TEMPERATURE: 0.7,
   JWT_EXPIRES_IN: '7d',
@@ -79,7 +81,14 @@ if (!env.success) {
   console.error(JSON.stringify(env.error.flatten().fieldErrors, null, 2));
 }
 
-export const config = { ...defaultConfig, ...env.data };
+export const config = {
+  ...defaultConfig,
+  ...env.data,
+  // Add computed properties
+  get OPENROUTER_API_KEY() {
+    return process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
+  },
+};
 
 // Type exports for use in other modules
 export type Config = typeof config;

@@ -1,19 +1,22 @@
 /**
  * OpenAI Integration Module
- * Provides streaming chat completion with tool calling support
+ * Provides streaming chat completion with tool calling support via OpenRouter
  */
 
 import OpenAI from 'openai';
 import { observability } from './observability';
 import { config } from './config';
 
-// Initialize OpenAI client with proper configuration
+// Initialize OpenAI client with OpenRouter configuration
 const openai = new OpenAI({
-  apiKey: config.OPENAI_API_KEY,
-  organization: config.OPENAI_ORG_ID,
-  project: config.OPENAI_PROJECT_ID,
+  apiKey: config.OPENROUTER_API_KEY,
+  baseURL: config.OPENROUTER_BASE_URL,
   maxRetries: 3,
   timeout: 30000,
+  defaultHeaders: {
+    'HTTP-Referer': config.NEXT_PUBLIC_APP_URL,
+    'X-Title': config.APP_NAME,
+  },
 });
 
 // Type definitions for chat completion
@@ -77,10 +80,10 @@ export async function createChatCompletion(
 
   try {
     const completionOptions: OpenAI.Chat.ChatCompletionCreateParams = {
-      model: options.model || 'gpt-4-turbo-preview',
+      model: options.model || config.OPENAI_MODEL,
       messages: normalizeMessages(options.messages),
-      temperature: options.temperature ?? 0.7,
-      max_tokens: options.maxTokens ?? 4096,
+      temperature: options.temperature ?? config.OPENAI_TEMPERATURE,
+      max_tokens: options.maxTokens ?? config.OPENAI_MAX_TOKENS,
       stream: options.stream ?? true,
       user: correlationId,
     };
@@ -267,11 +270,11 @@ function handleOpenAIError(error: unknown): Error {
   }
 
   if (error instanceof OpenAI.APIConnectionError) {
-    return new APIError('CONNECTION_ERROR', 'Failed to connect to OpenAI API', null, error);
+    return new APIError('CONNECTION_ERROR', 'Failed to connect to OpenRouter API', null, error);
   }
 
   if (error instanceof OpenAI.APIConnectionTimeoutError) {
-    return new APIError('TIMEOUT', 'Request to OpenAI API timed out', null, error);
+    return new APIError('TIMEOUT', 'Request to OpenRouter API timed out', null, error);
   }
 
   return new APIError('INTERNAL_ERROR', 'An unexpected error occurred', null, error as Error);
